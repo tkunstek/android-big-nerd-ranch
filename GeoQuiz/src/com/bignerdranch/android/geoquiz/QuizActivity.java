@@ -31,6 +31,7 @@ public class QuizActivity extends Activity {
 	};
 	
 	private int mCurrentIndex = 0;
+	private boolean mIsCheater;
 	
 	private void updateQuestion() {
 //		Log.d(TAG, "Updating question text for question #" + mCurrentIndex, new Exception());
@@ -43,18 +44,22 @@ public class QuizActivity extends Activity {
 		
 		int messageResId = 0;
 		
-		if (userPressedTrue == answerIsTrue) {
-			messageResId = R.string.correct_toast;
+		if (mIsCheater) {
+			messageResId = R.string.judgment_toast;
 		} else {
-			messageResId = R.string.incorrect_toast;
+			if (userPressedTrue == answerIsTrue) {
+				messageResId = R.string.correct_toast;
+			} else {
+				messageResId = R.string.incorrect_toast;
+			}
 		}
-		
 		Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
 	}
 	
 	private void nextQuestion()
 	{
 		mCurrentIndex = (mCurrentIndex +1) % mQuestionBank.length;
+		mIsCheater = false;
 		updateQuestion();
 	}
 	
@@ -106,7 +111,7 @@ public class QuizActivity extends Activity {
 				Intent i = new Intent(QuizActivity.this, CheatActivity.class);
 				boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
 				i.putExtra(CheatActivity.EXTRA_ANSWER_IS_TRUE, answerIsTrue);
-				startActivity(i);
+				startActivityForResult(i, 0);
 			}
 		});
         
@@ -133,6 +138,15 @@ public class QuizActivity extends Activity {
 			}
 		});
         
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//    	super.onActivityResult(requestCode, resultCode, data);
+    	if (data == null) {
+    		return;
+    	}
+    	mIsCheater = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_IS_SHOWN, false);
     }
     
     @Override
