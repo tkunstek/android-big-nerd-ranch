@@ -1,5 +1,6 @@
 package com.bignerdranch.android.geoquiz;
 
+import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,7 +22,7 @@ public class QuizActivity extends Activity {
 	
 	private static final String TAG = "QuizActivity";
 	private static final String KEY_INDEX = "index";
-	private static final String KEY_CHEATER = "mIsCheater";
+	private static final String KEY_CHEATER = "didCheat";
 	
 	private TrueFalse[] mQuestionBank = new TrueFalse[] {
 		new TrueFalse(R.string.question_oceans, true),
@@ -32,7 +33,7 @@ public class QuizActivity extends Activity {
 	};
 	
 	private int mCurrentIndex = 0;
-	private boolean mIsCheater;
+	private ArrayList<Integer> didCheat;
 	
 	private void updateQuestion() {
 //		Log.d(TAG, "Updating question text for question #" + mCurrentIndex, new Exception());
@@ -45,7 +46,7 @@ public class QuizActivity extends Activity {
 		
 		int messageResId = 0;
 		
-		if (mIsCheater) {
+		if (didCheat.contains(mCurrentIndex)) {
 			messageResId = R.string.judgment_toast;
 		} else {
 			if (userPressedTrue == answerIsTrue) {
@@ -60,7 +61,6 @@ public class QuizActivity extends Activity {
 	private void nextQuestion()
 	{
 		mCurrentIndex = (mCurrentIndex +1) % mQuestionBank.length;
-		mIsCheater = false;
 		updateQuestion();
 	}
 	
@@ -81,7 +81,9 @@ public class QuizActivity extends Activity {
         
         if (savedInstanceState != null) {
         	mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
-        	mIsCheater = savedInstanceState.getBoolean(KEY_CHEATER, false);
+        	didCheat = (ArrayList<Integer>) savedInstanceState.get(KEY_CHEATER);
+        } else {
+        	didCheat = new ArrayList<Integer>();
         }
         
         updateQuestion();
@@ -148,7 +150,10 @@ public class QuizActivity extends Activity {
     	if (data == null) {
     		return;
     	}
-    	mIsCheater = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_IS_SHOWN, false);
+    	if(data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_IS_SHOWN, false))
+    	{
+    		didCheat.add(mCurrentIndex);
+    	}
     }
     
     @Override
@@ -156,7 +161,7 @@ public class QuizActivity extends Activity {
     	super.onSaveInstanceState(savedInstanceState);
     	Log.i(TAG, "onSaveInstanceState");
     	savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
-    	savedInstanceState.putBoolean(KEY_CHEATER, mIsCheater);
+    	savedInstanceState.putIntegerArrayList(KEY_CHEATER, didCheat);
     }
 
     @Override
