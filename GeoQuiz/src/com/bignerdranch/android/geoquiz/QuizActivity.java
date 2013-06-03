@@ -3,7 +3,6 @@ package com.bignerdranch.android.geoquiz;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -19,6 +18,7 @@ public class QuizActivity extends Activity {
 	private TextView mQuestionTextView;
 	
 	private static final String TAG = "QuizActivity";
+	private static final String KEY_INDEX = "index";
 	
 	private TrueFalse[] mQuestionBank = new TrueFalse[] {
 		new TrueFalse(R.string.question_oceans, true),
@@ -69,6 +69,11 @@ public class QuizActivity extends Activity {
 				nextQuestion();
 			}
 		});
+        
+        if (savedInstanceState != null) {
+        	mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+        }
+        
         updateQuestion();
         
         mTrueButton = (Button)findViewById(R.id.true_button);
@@ -112,6 +117,13 @@ public class QuizActivity extends Activity {
 			}
 		});
         
+    }
+    
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+    	super.onSaveInstanceState(savedInstanceState);
+    	Log.i(TAG, "onSaveInstanceState");
+    	savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
     }
 
     @Override
