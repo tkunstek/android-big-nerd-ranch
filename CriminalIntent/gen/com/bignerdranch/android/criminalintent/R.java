@@ -35,6 +35,7 @@ public final class R {
         public static final int dialog_time_timePicker=0x7f050003;
         public static final int fragmentContainer=0x7f050001;
         public static final int menu_item_new_crime=0x7f05000b;
+        public static final int menu_item_show_subtitle=0x7f05000c;
         public static final int viewPager=0x7f050000;
     }
     public static final class layout {
