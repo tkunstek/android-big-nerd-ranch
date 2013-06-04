@@ -23,11 +23,14 @@ import android.widget.EditText;
 public class CrimeFragment extends Fragment {
 	public static final String EXTRA_CRIME_ID = "com.bignerdranch.android.criminalintent.crime_id";
 	private static final String DIALOG_DATE = "date";
+	private static final String DIALOG_TIME = "time";
 	private static final int REQUEST_DATE = 0;
+	private static final int REQUEST_TIME = 1;
 	
 	private Crime mCrime;
 	private EditText mTitleField;
 	private Button mDateButton;
+	private Button mTimeButton;
 	private CheckBox mSolvedBox;
 	
 	public static CrimeFragment newInstance(UUID crimeId) {
@@ -75,7 +78,6 @@ public class CrimeFragment extends Fragment {
 		});
 		
 		mDateButton = (Button)v.findViewById(R.id.crime_date);
-		updateDate();
 		mDateButton.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -86,6 +88,20 @@ public class CrimeFragment extends Fragment {
 				dialog.show(fm, DIALOG_DATE);
 			}
 		});
+		
+		mTimeButton = (Button)v.findViewById(R.id.crime_time);
+		mTimeButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				FragmentManager fm = getActivity().getSupportFragmentManager();
+				TimePickerFragment dialog = TimePickerFragment.newInstance(mCrime.getDate());
+				dialog.setTargetFragment(CrimeFragment.this, REQUEST_TIME);
+				dialog.show(fm, DIALOG_TIME);
+			}
+		});
+		
+		updateDate();
 		
 		mSolvedBox = (CheckBox)v.findViewById(R.id.crime_solved);
 		mSolvedBox.setChecked(mCrime.isSolved());
@@ -102,7 +118,9 @@ public class CrimeFragment extends Fragment {
 	{
 		Date d = mCrime.getDate();
 		CharSequence c = DateFormat.format("EEEE, MMM dd, yyyy", d);
+		CharSequence t = DateFormat.format("h:mm a", d);
 		mDateButton.setText(c);
+		mTimeButton.setText(t);
 	}
 	
 	@Override
@@ -110,6 +128,10 @@ public class CrimeFragment extends Fragment {
 		if (resultCode != Activity.RESULT_OK) return;
 		if (requestCode == REQUEST_DATE) {
 			Date date = (Date)data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+			mCrime.setDate(date);
+			updateDate();
+		} else if (requestCode == REQUEST_TIME) {
+			Date date = (Date)data.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
 			mCrime.setDate(date);
 			updateDate();
 		}
