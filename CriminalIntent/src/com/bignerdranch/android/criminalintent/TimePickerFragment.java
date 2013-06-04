@@ -46,7 +46,7 @@ public class TimePickerFragment extends DialogFragment {
 
 		TimePicker timePicker = (TimePicker)v.findViewById(R.id.dialog_time_timePicker);
 		timePicker.setCurrentHour(hour);
-		timePicker.setCurrentHour(minute);
+		timePicker.setCurrentMinute(minute);
 		
 		timePicker.setOnTimeChangedListener(new OnTimeChangedListener() {
 			
