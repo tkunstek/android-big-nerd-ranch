@@ -14,7 +14,7 @@ public class CrimeLab {
 	private CrimeLab(Context appContext) {
 		mAppContext = appContext;
 		mCrimes = new ArrayList<Crime>();
-		CreateCrimes(100);
+//		CreateCrimes(100);
 	}
 	
 	public static CrimeLab get(Context c) {
