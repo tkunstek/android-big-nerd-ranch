@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.bignerdranch.android.criminalintent.CrimeActivity"
+            android:name="com.bignerdranch.android.criminalintent.CrimePagerActivity"
             android:label="@string/app_name" >
         </activity>
     </application>
