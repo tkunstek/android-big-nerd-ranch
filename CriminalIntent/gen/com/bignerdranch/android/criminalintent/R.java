@@ -34,6 +34,7 @@ public final class R {
         public static final int dialog_date_datePicker=0x7f050002;
         public static final int dialog_time_timePicker=0x7f050003;
         public static final int fragmentContainer=0x7f050001;
+        public static final int menu_item_new_crime=0x7f05000b;
         public static final int viewPager=0x7f050000;
     }
     public static final class layout {
@@ -43,6 +44,9 @@ public final class R {
         public static final int fragment_crime=0x7f030003;
         public static final int list_item_crime=0x7f030004;
     }
+    public static final class menu {
+        public static final int fragment_crime_list=0x7f080000;
+    }
     public static final class string {
         public static final int app_name=0x7f060000;
         public static final int crime_details_label=0x7f060004;
@@ -51,6 +55,11 @@ public final class R {
         public static final int crime_title_label=0x7f060003;
         public static final int crimes_title=0x7f060006;
         public static final int date_picker_title=0x7f060007;
+        public static final int delete_crime=0x7f06000c;
+        public static final int hide_subtitle=0x7f06000a;
+        public static final int new_crime=0x7f060008;
+        public static final int show_subtitle=0x7f060009;
+        public static final int subtitle=0x7f06000b;
         public static final int title_activity_crime=0x7f060001;
     }
     public static final class style {

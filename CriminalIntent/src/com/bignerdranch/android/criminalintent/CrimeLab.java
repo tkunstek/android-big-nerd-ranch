@@ -36,6 +36,10 @@ public class CrimeLab {
 		return null;
 	}
 	
+	public void addCrime(Crime c) {
+		mCrimes.add(c);
+	}
+	
 	private void CreateCrimes(int count) {
 		for (int i=0; i < 100; i++) {
 			Crime c = new Crime();
