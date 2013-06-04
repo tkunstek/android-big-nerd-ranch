@@ -129,7 +129,7 @@ public class CrimeListFragment extends ListFragment {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			if (convertView == null) {
 				convertView = getActivity().getLayoutInflater()
-						.inflate(R.layout.list_item_crime, null);
+						.inflate(R.layout.list_item_crime, parent, false);
 			}
 			
 			// Configure for this crime
