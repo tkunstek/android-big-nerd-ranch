@@ -47,6 +47,7 @@ public class Crime {
         json.put(JSON_DATE, mDate.getTime());
         if (mPhoto != null)
             json.put(JSON_PHOTO, mPhoto.toJSON());
+        json.put(JSON_SUSPECT, mSuspect);
         return json;
     }
 
