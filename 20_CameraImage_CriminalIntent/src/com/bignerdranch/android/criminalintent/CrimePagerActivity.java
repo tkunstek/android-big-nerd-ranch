@@ -12,8 +12,12 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import android.support.v4.view.ViewPager;
 
-public class CrimePagerActivity extends FragmentActivity {
+public class CrimePagerActivity extends FragmentActivity 
+	implements CrimeFragment.Callbacks {
     ViewPager mViewPager;
+    
+    @Override
+    public void onCrimeUpdate(Crime crime) { }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -218,5 +218,9 @@ public class CrimeListFragment extends ListFragment {
             return convertView;
         }
     }
+    
+    public void updateUI() {
+    	((CrimeAdapter)getListAdapter()).notifyDataSetChanged();
+    }
 }
 
