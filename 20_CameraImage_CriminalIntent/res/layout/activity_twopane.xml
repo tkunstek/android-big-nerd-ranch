@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal" 
+    android:divider="?android:attr/dividerHorizontal"
     android:showDividers="middle">
     
     <FrameLayout android:id="@+id/fragmentContainer"
