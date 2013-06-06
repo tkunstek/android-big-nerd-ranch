@@ -53,7 +53,7 @@ public class FlickrFetchr {
 		return new String(getUrlBytes(urlSpec));
 	}
 	
-	public ArrayList<GalleryItem> fetchItems() {
+	public ArrayList<GalleryItem> fetchItems(int page) {
 		ArrayList<GalleryItem> items = new ArrayList<GalleryItem>();
 		
 		try {
@@ -61,6 +61,7 @@ public class FlickrFetchr {
 					.appendQueryParameter("method", METHOD_GET_RECENT)
 					.appendQueryParameter("api_key", API_KEY)
 					.appendQueryParameter(PARAM_EXTRAS, EXTRA_SMALL_URL)
+					.appendQueryParameter("page", Integer.toString(page))
 					.build().toString();
 			String xmlString = getUrl(url);
 			Log.i(TAG, "Received xml: " + xmlString);
