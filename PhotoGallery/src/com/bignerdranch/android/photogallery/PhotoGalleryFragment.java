@@ -120,8 +120,19 @@ public class PhotoGalleryFragment extends Fragment {
 			TextView textView = (TextView)convertView.findViewById(R.id.gallery_item_index);
 			textView.setText(String.format("%d/%d", position+1, mItems.size()));
 			GalleryItem item = getItem(position);
-			mThumbnailThread.queueThumbnail(imageView, item.getUrl());
+			Bitmap cacheHit = mThumbnailThread.checkCache(item.getUrl());
+			if (cacheHit != null) {
+				imageView.setImageBitmap(cacheHit);
+			} else {
+				mThumbnailThread.queueThumbnail(imageView, item.getUrl());
+			}
 			
+			// pre-load images
+			for (int i=Math.max(0, position-10); i< Math.min(mItems.size()-1, position+10); i++) {
+				mThumbnailThread.queuePreload(item.getUrl());
+			}
+			
+			// If looking at last item, fetch more items
 			if (position == mItems.size() -1)
 				loadData();
 			
