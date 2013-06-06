@@ -2,19 +2,31 @@ package com.bignerdranch.android.photogallery;
 
 import java.util.ArrayList;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.SearchManager;
+import android.app.SearchableInfo;
+import android.content.ComponentName;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 public class PhotoGalleryFragment extends Fragment {
@@ -24,11 +36,13 @@ public class PhotoGalleryFragment extends Fragment {
 	ThumbnailDownloader<ImageView> mThumbnailThread;
 	private int mPage = 0;
 	private boolean loading = false;
+	private boolean refreshing = false;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setRetainInstance(true);
+		setHasOptionsMenu(true);
 		loadData();
 		
 		mThumbnailThread = new ThumbnailDownloader<ImageView>(new Handler());
@@ -59,6 +73,44 @@ public class PhotoGalleryFragment extends Fragment {
 	}
 	
 	@Override
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.fragment_photo_gallery, menu);
+		
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			MenuItem searchItem = menu.findItem(R.id.menu_item_search);
+			SearchView searchView = (SearchView)searchItem.getActionView();
+			
+			// Get the data from our searchable.xml as a SearchableInfo
+			SearchManager searchManager = (SearchManager)getActivity()
+					.getSystemService(Context.SEARCH_SERVICE);
+			ComponentName name = getActivity().getComponentName();
+			SearchableInfo searchInfo = searchManager.getSearchableInfo(name);
+			
+			searchView.setSearchableInfo(searchInfo);
+		}
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.menu_item_search:
+				getActivity().onSearchRequested();
+				return true;
+			case R.id.menu_item_clear:
+				PreferenceManager.getDefaultSharedPreferences(getActivity())
+					.edit()
+					.putString(FlickrFetchr.PREF_SEARCH_QUERY, null)
+					.commit();
+				refresh();
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
+	}
+	
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_photo_gallery, container, false);
@@ -70,14 +122,25 @@ public class PhotoGalleryFragment extends Fragment {
 	private class FetchItemsTask extends AsyncTask<Void,Void,ArrayList<GalleryItem>> {
 		@Override
 		protected ArrayList<GalleryItem> doInBackground(Void... params) {
-			Log.i(TAG, "loading page: " + mPage);
-			return new FlickrFetchr().fetchItems(mPage);
+			Activity activity = getActivity();
+			if (activity == null)
+				return new ArrayList<GalleryItem>();
+			
+			String query = PreferenceManager.getDefaultSharedPreferences(activity)
+					.getString(FlickrFetchr.PREF_SEARCH_QUERY, null);
+					
+			if (query != null) {
+				return new FlickrFetchr().search(query, 1);
+			} else {
+				return new FlickrFetchr().fetchItems(mPage);
+			}
 		}
 		
 		@Override
 		protected void onPostExecute(ArrayList<GalleryItem> items) {
-			if(mItems == null) {
+			if(mItems == null || refreshing) {
 				mItems = items;
+				refreshing = false;
 				setupAdapter();
 			} else {
 				mItems.addAll(items);
@@ -101,6 +164,15 @@ public class PhotoGalleryFragment extends Fragment {
 		if(loading)return;
 		loading = true;
 		mPage++;
+		new FetchItemsTask().execute();
+	}
+	
+	public void refresh() {
+		if(loading)return;
+		loading = true;
+		refreshing = true;
+		mPage = 1;
+		mThumbnailThread.clearQueue();
 		new FetchItemsTask().execute();
 	}
 	
