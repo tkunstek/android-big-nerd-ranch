@@ -18,7 +18,7 @@ import android.util.Log;
 
 public class PollService extends IntentService {
 	private static final String TAG = "PollService";
-	private static final int POLL_INTERVAL = 1000*60*5; // 5 minutes
+//	private static final int POLL_INTERVAL = 1000*60*5; // 5 minutes
 	
 	public PollService() {
 		super(TAG);
@@ -79,7 +79,8 @@ public class PollService extends IntentService {
 				context.getSystemService(Context.ALARM_SERVICE);
 		
 		if (isOn) {
-			alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), POLL_INTERVAL, pi);
+//			alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), POLL_INTERVAL, pi);
+			alarmManager.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pi);
 		} else {
 			alarmManager.cancel(pi);
 			pi.cancel();
