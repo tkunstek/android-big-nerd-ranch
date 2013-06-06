@@ -6,4 +6,8 @@
 	<string name="search_hint">Search Flickr</string>
 	<string name="search">Search</string>
 	<string name="clear_search">Clear Search</string>
+    <string name="start_polling">Poll for new pictures</string>
+    <string name="stop_polling">Stop polling</string>
+    <string name="new_pictures_title">New PhotoGallery Pictures</string>
+    <string name="new_pictures_text">You have new pictures in PhotoGallery.</string>
 </resources>
